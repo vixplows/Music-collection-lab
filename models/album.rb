@@ -34,4 +34,11 @@ class Album
     return all_albums.map { |album| Album.new(album)}
   end
 
+  def artists
+    sql = "SELECT * FROM artists WHERE "
+  end
+
+
+
+
 end
