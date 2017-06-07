@@ -45,4 +45,11 @@ class Artist
     return albums
   end
 
+  def find()
+    sql = "SELECT * FROM artists WHERE id = #{id}"
+    result = SqlRunner.run(sql)
+    artist = result.first
+    return Artist.new(artist)
+  end
+
 end
