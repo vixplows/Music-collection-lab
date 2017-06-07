@@ -8,7 +8,7 @@ class SqlRunner
       result = db.exec(sql)
     ensure
       db.close
-     end
+    end
   return result
   end
 
