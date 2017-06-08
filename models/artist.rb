@@ -5,6 +5,7 @@ require_relative('album')
 class Artist
 
   attr_reader :id
+  attr_accessor :name
 
   def initialize(options)
     @id = options['id'].to_i if options['id']
@@ -29,7 +30,7 @@ class Artist
   end
 
   def Artist.delete_all()
-    sql = "DELETE FROM albums"
+    sql = "DELETE FROM artists"
     SqlRunner.run(sql)
   end
 
@@ -50,6 +51,17 @@ class Artist
     result = SqlRunner.run(sql)
     artist = result.first
     return Artist.new(artist)
+  end
+
+  def edit()
+    sql = "UPDATE artists SET
+    (
+      name
+      ) = (
+        '#{@name}'
+      )
+      WHERE id = #{@id}"
+      SqlRunner.run(sql)
   end
 
 end

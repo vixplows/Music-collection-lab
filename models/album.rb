@@ -5,6 +5,7 @@ require_relative('artist')
 class Album
 
   attr_reader :id, :artist_id
+  attr_accessor :title
 
   def initialize(options)
     @id = options['id'].to_i if options['id']
@@ -16,13 +17,13 @@ class Album
   def save()
     sql = "
     INSERT INTO albums (
-    title,
-    genre,
-    artist_id)
+      title,
+      genre,
+      artist_id)
     VALUES (
-    '#{@title}',
-    '#{@genre}',
-    #{artist_id}
+      '#{@title}',
+      '#{@genre}',
+      #{artist_id}
     )
     RETURNING id;"
     @id = SqlRunner.run(sql)[0]["id"].to_i()
@@ -57,6 +58,22 @@ class Album
     result = SqlRunner.run(sql)
     album = result[0]
     return Album.new(album)
+  end
+
+  def edit()
+    sql = "UPDATE albums SET
+    (
+      title,
+      genre,
+      artist_id
+    ) =
+    (
+      '#{@title}',
+      '#{@genre}',
+      #{@artist_id}
+    )
+    "
+    SqlRunner.run(sql)
   end
 
 end
