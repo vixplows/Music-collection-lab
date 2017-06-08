@@ -5,19 +5,22 @@ require_relative('album')
 class Artist
 
   attr_reader :id
-  attr_accessor :name
+  attr_accessor :name, :deleted
 
   def initialize(options)
     @id = options['id'].to_i if options['id']
     @name = options['name']
+    @deleted = options['deleted']
   end
 
   def save()
     sql = "
     INSERT INTO artists (
-    name
+      name,
+      deleted
     ) VALUES (
-      '#{@name}'
+      '#{@name}',
+      '#{@deleted}'
     )
     RETURNING id;"
     @id = SqlRunner.run(sql)[0]["id"].to_i
@@ -31,6 +34,19 @@ class Artist
 
   def Artist.delete_all()
     sql = "DELETE FROM artists"
+    SqlRunner.run(sql)
+  end
+
+  def delete_but_keep_record()
+    sql = "UPDATE artists SET
+    (
+    name,
+    deleted   
+    ) = (
+    '#{@name}',
+    TRUE
+    )
+    WHERE id = #{@id}"
     SqlRunner.run(sql)
   end
 
@@ -56,12 +72,14 @@ class Artist
   def edit()
     sql = "UPDATE artists SET
     (
-      name
-      ) = (
-        '#{@name}'
-      )
-      WHERE id = #{@id}"
-      SqlRunner.run(sql)
+    name,
+    deleted
+    ) = (
+    '#{@name}',
+    '#{@deleted}'
+    )
+    WHERE id = #{@id}"
+    SqlRunner.run(sql)
   end
 
 end
