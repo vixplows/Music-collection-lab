@@ -16,11 +16,9 @@ class Artist
   def save()
     sql = "
     INSERT INTO artists (
-      name,
-      deleted
+      name
     ) VALUES (
-      '#{@name}',
-      '#{@deleted}'
+      '#{@name}'
     )
     RETURNING id;"
     @id = SqlRunner.run(sql)[0]["id"].to_i
