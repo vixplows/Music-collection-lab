@@ -25,31 +25,32 @@ class Artist
   end
 
   def Artist.all
-    sql = "SELECT * FROM artists"
+    sql = "SELECT * FROM artists WHERE deleted = FALSE"
     all_artists = SqlRunner.run(sql)
     return all_artists.map { |artist| Artist.new(artist)}
   end
 
   def Artist.delete_all()
-    sql = "DELETE FROM artists"
+    sql = "UPDATE artists SET deleted = TRUE"
     SqlRunner.run(sql)
   end
 
-  def delete_but_keep_record()
-    sql = "UPDATE artists SET
-    (
-    name,
-    deleted   
-    ) = (
-    '#{@name}',
-    TRUE
-    )
-    WHERE id = #{@id}"
-    SqlRunner.run(sql)
-  end
+## Refactored code 
+  # def delete_but_keep_record()
+  #   sql = "UPDATE artists SET
+  #   (
+  #   name,
+  #   deleted   
+  #   ) = (
+  #   '#{@name}',
+  #   TRUE
+  #   )
+  #   WHERE id = #{@id}"
+  #   SqlRunner.run(sql)
+  # end
 
   def delete()
-    sql = "DELETE FROM artists WHERE id = #{id}"
+    sql = "UPDATE artists SET deleted = TRUE WHERE id = #{id}"
     SqlRunner.run(sql)
   end
 
@@ -60,11 +61,11 @@ class Artist
     return albums
   end
 
-  def find()
-    sql = "SELECT * FROM artists WHERE id = #{id}"
-    result = SqlRunner.run(sql)
-    artist = result.first
-    return Artist.new(artist)
+  def find(id)
+    sql = "SELECT * FROM artists WHERE id = #{id} AND deletedd = FALSE"
+    artist = SqlRunner.run(sql)
+    result = artist.first
+    return Artist.new(result)
   end
 
   def edit()
